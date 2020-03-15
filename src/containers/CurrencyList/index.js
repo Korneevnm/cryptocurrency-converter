@@ -1,27 +1,35 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchCryptocurrencyList } from '../../actions';
+import { createSelector } from 'reselect';
+import { cryptocurrencyListLoad } from './actions';
 import { Table, Input, Button } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import './style.sass';
 
 const CurrencyList = () => {
   const { Column } = Table;
-  const [counter, setCounter] = useState(0);
-  const cryptocurrencyList = useSelector(state => state.cryptocurrencyList);
   const dispatch = useDispatch();
+  const [counter, setCounter] = useState(0);
+  const selectCryptocurrencyList = createSelector(
+    state => state.cryptocurrencyList,
+    cryptocurrencyList => cryptocurrencyList
+  );
+  const cryptocurrencyList = useSelector(selectCryptocurrencyList);
 
-  useEffect(() => {
-    dispatch(fetchCryptocurrencyList(cryptocurrencyList.cryptocurrency));
+  useEffect(
+    cryptocurrencyList => {
+      dispatch(cryptocurrencyListLoad(cryptocurrencyList));
+      const interval = setInterval(() => {
+        setCounter(counter => counter + 1);
+      }, 150000);
+      return () => {
+        clearInterval(interval);
+      };
+    },
+    [counter, dispatch]
+  );
 
-    // const interval = setInterval(() => {
-    //   setCounter(counter => counter + 1);
-    // }, 10000);
-
-    // return () => {
-    //   clearInterval(interval);
-    // };
-  }, [counter]);
+  // console.log(cryptocurrencyList);
 
   const columnRank = (
     <Column
@@ -188,14 +196,11 @@ const CurrencyList = () => {
 
   return (
     <>
-      {/* <Table
-        dataSource={cryptocurrencyList.cryptocurrency.map(item => {
-          item['key'] = item.id;
-          return item;
-        })}
+      <Table
+        dataSource={cryptocurrencyList.cryptocurrency}
         loading={cryptocurrencyList.loading}
         pagination={{
-          total: cryptocurrencyList.cryptocurrency.length,
+          total: cryptocurrencyList.length,
           showTotal: (total, range) =>
             `${range[0]}-${range[1]} of ${total} coins`,
           showSizeChanger: true,
@@ -208,7 +213,7 @@ const CurrencyList = () => {
         {columnMarketCap}
         {columnVolume}
         {columnChange}
-      </Table> */}
+      </Table>
     </>
   );
 };

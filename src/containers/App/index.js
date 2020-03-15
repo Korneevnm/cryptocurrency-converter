@@ -1,7 +1,7 @@
 import React from 'react';
-import Header from '../header';
-import CurrencyList from '../currency-list';
-import CurrencyConvert from '../currency-convert';
+import Header from '../../components/Header';
+import CurrencyConvert from '../CurrencyConvert';
+import CurrencyList from '../CurrencyList';
 import './style.sass';
 
 function App() {

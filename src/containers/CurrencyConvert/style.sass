@@ -1,23 +1,36 @@
+.converter
+  display: flex
+  justify-content: space-between
+  max-width: 750px
+  margin: 0 auto 30px
+
 .converter__item
   display: flex
   max-width: 400px
   .ant-select
+    z-index: 1
     min-width: 160px
     width: 160px
+    margin-right: -1px
   .ant-select-single.ant-select-lg
     &:not(.ant-select-customize-input)
       .ant-select-selector
         height: 100%
         background: #fafafa
-        border: 1px solid #000
   .ant-select-selection-item
     display: flex
     align-items: center
     img
       margin-right: 5px
-  .ant-input
-    border: 1px solid #000
-    border-left: 0
+  .ant-input-number
+    width: 100%
+    &:hover
+      z-index: 1
+  .ant-input-number-focused
+    z-index: 1
+
+.ant-input-number
+  width: 150px
 
 .converter_option
   .ant-select-item-option-content
