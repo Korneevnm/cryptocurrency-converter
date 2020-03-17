@@ -1,6 +1,6 @@
 import produce from 'immer';
 import {
-  FETCH_CRYPTOCURRENCYLIST_LOAD,
+  FETCH_CRYPTOCURRENCYLIST_START,
   FETCH_CRYPTOCURRENCYLIST_SUCCESS,
   FETCH_CRYPTOCURRENCYLIST_FAILURE
 } from './constants';
@@ -14,16 +14,15 @@ const initialState = {
 const cryptocurrencyList = (state = initialState, action) =>
   produce(state, draft => {
     switch (action.type) {
-      case FETCH_CRYPTOCURRENCYLIST_LOAD:
+      case FETCH_CRYPTOCURRENCYLIST_START:
         draft.cryptocurrency = [];
         draft.loading = true;
         draft.error = false;
         break;
 
       case FETCH_CRYPTOCURRENCYLIST_SUCCESS:
-        draft.cryptocurrency = action.cryptocurrencies;
+        draft.cryptocurrency = action.data;
         draft.loading = false;
-        draft.error = false;
         break;
 
       case FETCH_CRYPTOCURRENCYLIST_FAILURE:

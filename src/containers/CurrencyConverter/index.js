@@ -1,31 +1,42 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { createSelector } from 'reselect';
-import { InputNumber, Select } from 'antd';
-import { currencyLoad } from './actions';
-import CurrencyConverterSelect from '../CurrencyConverterSelect';
+import { InputNumber } from 'antd';
+import { currenciesLoad, currencyLoad } from './actions';
+import {
+  makeSelectCurrencyFromData,
+  makeSelectCurrencyToData
+} from './selectors';
+import CurrencyConverterSelect from '../../components/CurrencyConverterSelect';
 import './style.sass';
 
 const CurrencyConverter = () => {
-  const { Option, OptGroup } = Select;
   const dispatch = useDispatch();
   const [value, setValue] = useState(1);
-  const [convertId, setConvertId] = useState(1);
-  const [convertSymbol, setConvertSymbol] = useState('USD');
-  const selectCurrency = createSelector(
-    state => state.currency,
-    currency => currency
-  );
-  const currency = useSelector(selectCurrency);
+
+  const currencyFromData = useSelector(makeSelectCurrencyFromData);
+  const currencyToData = useSelector(makeSelectCurrencyToData);
+  console.log('currencyFromData', currencyFromData);
+  console.log('currencyToData', currencyToData);
+  const { id } = currencyFromData;
+  const { symbol } = currencyToData;
 
   useEffect(() => {
-    dispatch(currencyLoad('USD', convertId, value));
-  }, [dispatch, value, convertId, convertSymbol]);
+    dispatch(currenciesLoad());
+    dispatch(currencyLoad(id, symbol, value));
+  }, [dispatch, value]);
+
+  const handleChange = (currencyFromId, currencyToSymbol, value) => {
+    dispatch(currencyLoad(currencyFromId, currencyToSymbol, value));
+  };
 
   return (
     <div className='converter'>
       <div className='converter__item'>
-        <CurrencyConverterSelect defaultValue='Bitcoin' />
+        <CurrencyConverterSelect
+          defaultValue='Bitcoin'
+          type='fromSelect'
+          handleChange={handleChange}
+        />
         <InputNumber
           size='large'
           min={0}
@@ -34,7 +45,11 @@ const CurrencyConverter = () => {
         />
       </div>
       <div className='converter__item'>
-        <CurrencyConverterSelect defaultValue='United States Dollar' />
+        <CurrencyConverterSelect
+          defaultValue='United States Dollar'
+          type='toSelect'
+          handleChange={handleChange}
+        />
         <InputNumber
           size='large'
           min={0}
@@ -43,7 +58,7 @@ const CurrencyConverter = () => {
               .toFixed(2)
               .replace(/(?=\B(?:\d{3})+(?!\d))/g, ' ')
           }
-          value={currency.toData.price ? currency.toData.price : 0}
+          value={currencyToData.price}
         />
       </div>
     </div>

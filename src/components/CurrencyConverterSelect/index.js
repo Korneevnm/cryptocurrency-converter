@@ -1,23 +1,21 @@
-import React, { useState, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { createSelector } from 'reselect';
+import React from 'react';
+import { useSelector } from 'react-redux';
 import { Select } from 'antd';
-import { currenciesLoad } from './actions';
+import {
+  makeSelectCurrenciesList,
+  makeSelectCryptoCurrenciesList,
+  makeSelectCurrencyLoading,
+  makeSelectCurrencyFromData,
+  makeSelectCurrencyToData
+} from '../../containers/CurrencyConverter/selectors';
 
-const CurrencyConverterSelect = ({ defaultValue }) => {
+const CurrencyConverterSelect = ({ defaultValue, type, handleChange }) => {
   const { Option, OptGroup } = Select;
-  const dispatch = useDispatch();
-  const [convertId, setConvertId] = useState(1);
-  const [convertSymbol, setConvertSymbol] = useState('USD');
-  const selectCurrenciesList = createSelector(
-    state => state.currencies,
-    currencies => currencies
-  );
-  const currenciesList = useSelector(selectCurrenciesList);
-
-  useEffect(() => {
-    dispatch(currenciesLoad());
-  }, [dispatch]);
+  const currenciesList = useSelector(makeSelectCurrenciesList);
+  const cryptoCurrenciesList = useSelector(makeSelectCryptoCurrenciesList);
+  const currenciesLoading = useSelector(makeSelectCurrencyLoading);
+  const currencyFromData = useSelector(makeSelectCurrencyFromData);
+  const currencyToData = useSelector(makeSelectCurrencyToData);
 
   return (
     <>
@@ -25,7 +23,7 @@ const CurrencyConverterSelect = ({ defaultValue }) => {
         showSearch
         optionFilterProp='children'
         defaultValue={defaultValue}
-        loading={currenciesList.currencies.loading}
+        loading={currenciesLoading}
         filterOption={(input, option) => {
           if (option.children) {
             return option.children
@@ -35,12 +33,15 @@ const CurrencyConverterSelect = ({ defaultValue }) => {
           }
         }}
         onChange={(value, { id, symbol }) => {
-          setConvertSymbol(symbol);
-          setConvertId(id);
+          if (type === 'fromSelect') {
+            handleChange(id, currencyToData.symbol);
+          } else {
+            handleChange(currencyFromData.id, symbol);
+          }
         }}
         size='large'>
         <OptGroup label='Fiat Currencies'>
-          {currenciesList.currencies.map(({ id, name, sign, symbol }) => (
+          {currenciesList.map(({ id, name, sign, symbol }) => (
             <Option
               key={id}
               id={id}
@@ -52,7 +53,7 @@ const CurrencyConverterSelect = ({ defaultValue }) => {
           ))}
         </OptGroup>
         <OptGroup label='Cryptocurrencies'>
-          {currenciesList.cryptoCurrencies.map(({ id, name, symbol }) => (
+          {cryptoCurrenciesList.map(({ id, name, symbol }) => (
             <Option
               key={id}
               id={id}

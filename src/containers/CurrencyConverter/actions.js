@@ -1,26 +1,54 @@
 import {
-  FETCH_CURRENCY_LOAD,
-  FETCH_CURRENCY_SUCCESS,
-  FETCH_CURRENCY_FAILURE
+  FETCH_CURRENCIES_START,
+  FETCH_CURRENCIES_SUCCESS,
+  FETCH_CURRENCIES_FAILURE,
+  CURRENCY_CONVERT_START,
+  CURRENCY_CONVERT_SUCCESS,
+  CURRENCY_CONVERT_FAILURE
 } from './constants';
 
-const currencyLoad = (symbol, id, amount) => {
+const currenciesLoad = () => ({
+  type: FETCH_CURRENCIES_START
+});
+
+const currenciesLoaded = (currencies, cryptoCurrencies) => ({
+  type: FETCH_CURRENCIES_SUCCESS,
+  currencies,
+  cryptoCurrencies
+});
+
+const currenciesError = error => ({
+  type: FETCH_CURRENCIES_FAILURE,
+  error
+});
+
+const currencyLoad = (id, symbol, amount) => {
+  console.log(amount);
   return {
-    type: FETCH_CURRENCY_LOAD,
-    fromData: { symbol, id, amount },
-    toData: { symbol, id, amount }
+    type: CURRENCY_CONVERT_START,
+    id,
+    symbol,
+    amount
   };
 };
 
-const currencyLoaded = () => {
+const currencyLoaded = toData => {
   return {
-    type: FETCH_CURRENCY_SUCCESS
+    type: CURRENCY_CONVERT_SUCCESS,
+    toData
   };
 };
 
 const currencyError = error => ({
-  type: FETCH_CURRENCY_FAILURE,
+  type: CURRENCY_CONVERT_FAILURE,
   error
 });
 
-export { currencyLoad, currencyLoaded, currencyError };
+export {
+  currenciesLoad,
+  currenciesLoaded,
+  currenciesError,
+  currencyLoad,
+  currencyLoaded,
+  currencyError
+};

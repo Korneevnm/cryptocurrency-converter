@@ -1,33 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { createSelector } from 'reselect';
-import { cryptocurrencyListLoad } from './actions';
 import { Table, Input, Button } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
+import { cryptocurrencyListLoad } from './actions';
+import { makeSelectCryptocurrencyList, makeSelectLoading } from './selectors';
 import './style.sass';
 
 const CurrencyList = () => {
   const { Column } = Table;
   const dispatch = useDispatch();
   const [counter, setCounter] = useState(0);
-  const selectCryptocurrencyList = createSelector(
-    state => state.cryptocurrencyList,
-    cryptocurrencyList => cryptocurrencyList
-  );
-  const cryptocurrencyList = useSelector(selectCryptocurrencyList);
 
-  useEffect(
-    cryptocurrencyList => {
-      dispatch(cryptocurrencyListLoad());
-      const interval = setInterval(() => {
-        setCounter(counter => counter + 1);
-      }, 150000);
-      return () => {
-        clearInterval(interval);
-      };
-    },
-    [counter, dispatch]
-  );
+  const cryptocurrencyList = useSelector(makeSelectCryptocurrencyList);
+  const cryptocurrencyListLoading = useSelector(makeSelectLoading);
+
+  useEffect(() => {
+    dispatch(cryptocurrencyListLoad());
+
+    const interval = setInterval(() => {
+      setCounter(counter => counter + 1);
+    }, 150000);
+    return () => {
+      clearInterval(interval);
+    };
+  }, [dispatch, counter]);
 
   const columnRank = (
     <Column
@@ -195,8 +191,9 @@ const CurrencyList = () => {
   return (
     <>
       <Table
-        dataSource={cryptocurrencyList.cryptocurrency}
-        loading={cryptocurrencyList.loading}
+        dataSource={cryptocurrencyList}
+        rowKey={record => record.id}
+        loading={cryptocurrencyListLoading}
         pagination={{
           total: cryptocurrencyList.length,
           showTotal: (total, range) =>

@@ -1,28 +1,22 @@
 import {
-  FETCH_CRYPTOCURRENCYLIST_LOAD,
+  FETCH_CRYPTOCURRENCYLIST_START,
   FETCH_CRYPTOCURRENCYLIST_SUCCESS,
   FETCH_CRYPTOCURRENCYLIST_FAILURE
 } from './constants';
 
-const cryptocurrencyListLoad = () => {
-  return {
-    type: FETCH_CRYPTOCURRENCYLIST_LOAD
-  };
-};
+const cryptocurrencyListLoad = () => ({
+  type: FETCH_CRYPTOCURRENCYLIST_START
+});
 
-const cryptocurrencyListLoaded = cryptocurrency => {
-  return {
-    type: FETCH_CRYPTOCURRENCYLIST_SUCCESS,
-    cryptocurrency
-  };
-};
+const cryptocurrencyListLoaded = cryptocurrency => ({
+  type: FETCH_CRYPTOCURRENCYLIST_SUCCESS,
+  cryptocurrency
+});
 
-const cryptocurrencyListError = error => {
-  return {
-    type: FETCH_CRYPTOCURRENCYLIST_FAILURE,
-    error
-  };
-};
+const cryptocurrencyListError = error => ({
+  type: FETCH_CRYPTOCURRENCYLIST_FAILURE,
+  error
+});
 
 export {
   cryptocurrencyListLoad,

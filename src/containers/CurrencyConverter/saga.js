@@ -1,34 +1,56 @@
 import { call, put, takeLatest } from 'redux-saga/effects';
 import {
-  FETCH_CURRENCY_LOAD,
-  FETCH_CURRENCY_SUCCESS,
-  FETCH_CURRENCY_FAILURE
+  FETCH_CURRENCIES_START,
+  FETCH_CURRENCIES_SUCCESS,
+  FETCH_CURRENCIES_FAILURE,
+  CURRENCY_CONVERT_START,
+  CURRENCY_CONVERT_SUCCESS,
+  CURRENCY_CONVERT_FAILURE
 } from './constants';
 import axios from 'axios';
 
-const fetchData = ({ symbol, id, amount }) =>
-  axios
-    .get(
-      `https://pro-api.coinmarketcap.com/v1/tools/price-conversion?CMC_PRO_API_KEY=711e907c-a7d7-46a5-917c-5dc0f72fce75&id=${id}&amount=${amount}&convert=${symbol}`
-    )
-    .then(({ data: { data } }) => {
-      return {
-        symbol: symbol,
-        id: data.id,
-        amount: data.amount,
-        price: data.quote[symbol].price
-      };
-    });
-
-function* getCurrency(action) {
+function* getCurrencies() {
   try {
-    const toData = yield call(fetchData, action.fromData);
-    yield put({ type: FETCH_CURRENCY_SUCCESS, toData });
+    const data = yield call(() =>
+      axios
+        .all([
+          axios.get(
+            `https://pro-api.coinmarketcap.com/v1/fiat/map?CMC_PRO_API_KEY=711e907c-a7d7-46a5-917c-5dc0f72fce75`
+          ),
+          axios.get(
+            `https://pro-api.coinmarketcap.com/v1/cryptocurrency/map?CMC_PRO_API_KEY=711e907c-a7d7-46a5-917c-5dc0f72fce75`
+          )
+        ])
+        .then(data => data.map(({ data: { data } }) => data))
+    );
+    yield put({ type: FETCH_CURRENCIES_SUCCESS, data });
   } catch (error) {
-    yield put({ type: FETCH_CURRENCY_FAILURE, error });
+    yield put({ type: FETCH_CURRENCIES_FAILURE, error });
+  }
+}
+
+function* getCurrencyConvert({ id, symbol, amount }) {
+  console.log(id, symbol, amount);
+  try {
+    const toData = yield call(() =>
+      axios
+        .get(
+          `https://pro-api.coinmarketcap.com/v1/tools/price-conversion?CMC_PRO_API_KEY=711e907c-a7d7-46a5-917c-5dc0f72fce75&id=${id}&amount=${amount}&convert=${symbol}`
+        )
+        .then(({ data: { data } }) => {
+          return {
+            symbol: symbol,
+            price: data.quote[symbol].price
+          };
+        })
+    );
+    yield put({ type: CURRENCY_CONVERT_SUCCESS, toData });
+  } catch (error) {
+    yield put({ type: CURRENCY_CONVERT_FAILURE, error });
   }
 }
 
 export default function* watcherCurrency() {
-  yield takeLatest(FETCH_CURRENCY_LOAD, getCurrency);
+  yield takeLatest(FETCH_CURRENCIES_START, getCurrencies);
+  yield takeLatest(CURRENCY_CONVERT_START, getCurrencyConvert);
 }
