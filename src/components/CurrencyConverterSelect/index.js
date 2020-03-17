@@ -9,7 +9,12 @@ import {
   makeSelectCurrencyToData
 } from '../../containers/CurrencyConverter/selectors';
 
-const CurrencyConverterSelect = ({ defaultValue, type, handleChange }) => {
+const CurrencyConverterSelect = ({
+  defaultValue,
+  type,
+  handleChange,
+  inputValue
+}) => {
   const { Option, OptGroup } = Select;
   const currenciesList = useSelector(makeSelectCurrenciesList);
   const cryptoCurrenciesList = useSelector(makeSelectCryptoCurrenciesList);
@@ -34,9 +39,9 @@ const CurrencyConverterSelect = ({ defaultValue, type, handleChange }) => {
         }}
         onChange={(value, { id, symbol }) => {
           if (type === 'fromSelect') {
-            handleChange(id, currencyToData.symbol);
+            handleChange(id, currencyToData.symbol, inputValue);
           } else {
-            handleChange(currencyFromData.id, symbol);
+            handleChange(currencyFromData.id, symbol, inputValue);
           }
         }}
         size='large'>

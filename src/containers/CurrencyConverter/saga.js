@@ -30,21 +30,26 @@ function* getCurrencies() {
 }
 
 function* getCurrencyConvert({ id, symbol, amount }) {
-  console.log(id, symbol, amount);
   try {
-    const toData = yield call(() =>
+    const data = yield call(() =>
       axios
         .get(
           `https://pro-api.coinmarketcap.com/v1/tools/price-conversion?CMC_PRO_API_KEY=711e907c-a7d7-46a5-917c-5dc0f72fce75&id=${id}&amount=${amount}&convert=${symbol}`
         )
         .then(({ data: { data } }) => {
           return {
-            symbol: symbol,
-            price: data.quote[symbol].price
+            fromData: {
+              id: id,
+              amount: amount
+            },
+            toData: {
+              symbol: symbol,
+              price: data.quote[symbol].price
+            }
           };
         })
     );
-    yield put({ type: CURRENCY_CONVERT_SUCCESS, toData });
+    yield put({ type: CURRENCY_CONVERT_SUCCESS, data });
   } catch (error) {
     yield put({ type: CURRENCY_CONVERT_FAILURE, error });
   }

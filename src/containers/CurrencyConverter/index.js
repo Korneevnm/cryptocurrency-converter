@@ -15,15 +15,15 @@ const CurrencyConverter = () => {
 
   const currencyFromData = useSelector(makeSelectCurrencyFromData);
   const currencyToData = useSelector(makeSelectCurrencyToData);
-  console.log('currencyFromData', currencyFromData);
-  console.log('currencyToData', currencyToData);
+  // console.log('currencyFromData', currencyFromData);
+  // console.log('currencyToData', currencyToData);
   const { id } = currencyFromData;
   const { symbol } = currencyToData;
 
   useEffect(() => {
     dispatch(currenciesLoad());
     dispatch(currencyLoad(id, symbol, value));
-  }, [dispatch, value]);
+  }, [dispatch, id, symbol, value]);
 
   const handleChange = (currencyFromId, currencyToSymbol, value) => {
     dispatch(currencyLoad(currencyFromId, currencyToSymbol, value));
@@ -36,6 +36,7 @@ const CurrencyConverter = () => {
           defaultValue='Bitcoin'
           type='fromSelect'
           handleChange={handleChange}
+          inputValue={value}
         />
         <InputNumber
           size='large'
@@ -49,6 +50,7 @@ const CurrencyConverter = () => {
           defaultValue='United States Dollar'
           type='toSelect'
           handleChange={handleChange}
+          inputValue={value}
         />
         <InputNumber
           size='large'

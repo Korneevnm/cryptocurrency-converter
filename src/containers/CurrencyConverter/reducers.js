@@ -49,7 +49,8 @@ const currency = (state = initialState, action) =>
         break;
 
       case CURRENCY_CONVERT_SUCCESS:
-        draft.toData = action.toData;
+        draft.fromData = action.data.fromData;
+        draft.toData = action.data.toData;
         draft.loading = false;
         break;
 

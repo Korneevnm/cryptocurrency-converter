@@ -23,7 +23,6 @@ const currenciesError = error => ({
 });
 
 const currencyLoad = (id, symbol, amount) => {
-  console.log(amount);
   return {
     type: CURRENCY_CONVERT_START,
     id,
