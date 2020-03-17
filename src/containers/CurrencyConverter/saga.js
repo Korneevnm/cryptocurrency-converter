@@ -8,12 +8,13 @@ import {
   CURRENCY_CONVERT_FAILURE
 } from './constants';
 
+import axios from 'axios';
 import axiosConfig, { apiKey } from '../../utils/axiosConfig';
 
 function* getCurrencies() {
   try {
     const data = yield call(() =>
-      axiosConfig
+      axios
         .all([
           axiosConfig.get(`/fiat/map?CMC_PRO_API_KEY=${apiKey}`),
           axiosConfig.get(`/cryptocurrency/map?CMC_PRO_API_KEY=${apiKey}`)

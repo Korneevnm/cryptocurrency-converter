@@ -1,8 +1,10 @@
 import axios from 'axios';
 
+const cors = 'https://cors-anywhere.herokuapp.com/';
+const url = 'https://pro-api.coinmarketcap.com/v1';
+
 const instanse = axios.create({
-  baseURL:
-    'https://cors-anywhere.herokuapp.com/https://pro-api.coinmarketcap.com/v1'
+  baseURL: `${cors}${url}`
 });
 
 export const apiKey = '0dfc3175-2e72-4d3c-81bc-bb72416933e6';
