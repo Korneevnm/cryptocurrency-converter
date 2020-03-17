@@ -18,7 +18,7 @@ const CurrencyList = () => {
 
   useEffect(
     cryptocurrencyList => {
-      dispatch(cryptocurrencyListLoad(cryptocurrencyList));
+      dispatch(cryptocurrencyListLoad());
       const interval = setInterval(() => {
         setCounter(counter => counter + 1);
       }, 150000);
@@ -28,8 +28,6 @@ const CurrencyList = () => {
     },
     [counter, dispatch]
   );
-
-  // console.log(cryptocurrencyList);
 
   const columnRank = (
     <Column

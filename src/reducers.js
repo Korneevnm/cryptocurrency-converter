@@ -1,11 +1,13 @@
 import { combineReducers } from 'redux';
 
+import currencies from './containers/CurrencyConverterSelect/reducers';
+import currency from './containers/CurrencyConverter/reducers';
 import cryptocurrencyList from './containers/CurrencyList/reducers';
-import currency from './containers/CurrencyConvert/reducers';
 
 const rootReducer = combineReducers({
-  cryptocurrencyList: cryptocurrencyList,
-  currency: currency
+  currencies: currencies,
+  currency: currency,
+  cryptocurrencyList: cryptocurrencyList
 });
 
 export default rootReducer;

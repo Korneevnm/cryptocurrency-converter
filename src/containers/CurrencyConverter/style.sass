@@ -1,16 +1,17 @@
 .converter
   display: flex
   justify-content: space-between
-  max-width: 750px
+  max-width: 900px
   margin: 0 auto 30px
 
 .converter__item
   display: flex
-  max-width: 400px
+  width: 48%
   .ant-select
     z-index: 1
-    min-width: 160px
-    width: 160px
+    width: 100%
+    min-width: 250px
+    max-width: 250px
     margin-right: -1px
   .ant-select-single.ant-select-lg
     &:not(.ant-select-customize-input)
@@ -29,8 +30,6 @@
   .ant-input-number-focused
     z-index: 1
 
-.ant-input-number
-  width: 150px
 
 .converter_option
   .ant-select-item-option-content

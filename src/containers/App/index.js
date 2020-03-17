@@ -1,6 +1,6 @@
 import React from 'react';
 import Header from '../../components/Header';
-import CurrencyConvert from '../CurrencyConvert';
+import CurrencyConverter from '../CurrencyConverter';
 import CurrencyList from '../CurrencyList';
 import './style.sass';
 
@@ -8,7 +8,7 @@ function App() {
   return (
     <div className='container'>
       <Header />
-      <CurrencyConvert />
+      <CurrencyConverter />
       <CurrencyList />
     </div>
   );

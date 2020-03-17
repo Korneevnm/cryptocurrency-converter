@@ -7,14 +7,14 @@ import {
 const currencyLoad = (symbol, id, amount) => {
   return {
     type: FETCH_CURRENCY_LOAD,
-    data: { symbol, id, amount }
+    fromData: { symbol, id, amount },
+    toData: { symbol, id, amount }
   };
 };
 
-const currencyLoaded = data => {
+const currencyLoaded = () => {
   return {
-    type: FETCH_CURRENCY_SUCCESS,
-    data
+    type: FETCH_CURRENCY_SUCCESS
   };
 };
 

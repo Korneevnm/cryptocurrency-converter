@@ -6,17 +6,17 @@ import {
 } from './constants';
 import axios from 'axios';
 
-const getCryptocurrencyList = () =>
+const fetchData = () =>
   axios
     .get(
-      // `https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest?CMC_PRO_API_KEY=684c8a70-c11a-4fa6-b159-ad8e159ff06a&limit=2500`
-      `https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest?CMC_PRO_API_KEY=684c8a70-c11a-4fa6-b159-ad8e159ff06a&limit=100`
+      // `https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest?CMC_PRO_API_KEY=711e907c-a7d7-46a5-917c-5dc0f72fce75&limit=2500`
+      `https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest?CMC_PRO_API_KEY=711e907c-a7d7-46a5-917c-5dc0f72fce75&limit=100`
     )
     .then(({ data: { data } }) => data);
 
-function* fetchData() {
+function* getCryptocurrencyList() {
   try {
-    const response = yield call(getCryptocurrencyList);
+    const response = yield call(fetchData);
     const cryptocurrencies = response.map(item => {
       item.key = item.id;
       return item;
@@ -28,5 +28,5 @@ function* fetchData() {
 }
 
 export default function* watcherCryptocurrencyList() {
-  yield takeLatest(FETCH_CRYPTOCURRENCYLIST_LOAD, fetchData);
+  yield takeLatest(FETCH_CRYPTOCURRENCYLIST_LOAD, getCryptocurrencyList);
 }
