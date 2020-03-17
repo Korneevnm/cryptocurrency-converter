@@ -7,19 +7,16 @@ import {
   CURRENCY_CONVERT_SUCCESS,
   CURRENCY_CONVERT_FAILURE
 } from './constants';
-import axios from 'axios';
+
+import axiosConfig, { apiKey } from '../../utils/axiosConfig';
 
 function* getCurrencies() {
   try {
     const data = yield call(() =>
-      axios
+      axiosConfig
         .all([
-          axios.get(
-            `https://pro-api.coinmarketcap.com/v1/fiat/map?CMC_PRO_API_KEY=711e907c-a7d7-46a5-917c-5dc0f72fce75`
-          ),
-          axios.get(
-            `https://pro-api.coinmarketcap.com/v1/cryptocurrency/map?CMC_PRO_API_KEY=711e907c-a7d7-46a5-917c-5dc0f72fce75`
-          )
+          axiosConfig.get(`/fiat/map?CMC_PRO_API_KEY=${apiKey}`),
+          axiosConfig.get(`/cryptocurrency/map?CMC_PRO_API_KEY=${apiKey}`)
         ])
         .then(data => data.map(({ data: { data } }) => data))
     );
@@ -32,9 +29,10 @@ function* getCurrencies() {
 function* getCurrencyConvert({ id, symbol, amount }) {
   try {
     const data = yield call(() =>
-      axios
+      axiosConfig
         .get(
-          `https://pro-api.coinmarketcap.com/v1/tools/price-conversion?CMC_PRO_API_KEY=711e907c-a7d7-46a5-917c-5dc0f72fce75&id=${id}&amount=${amount}&convert=${symbol}`
+          // `https://pro-api.coinmarketcap.com/v1/tools/price-conversion?CMC_PRO_API_KEY=711e907c-a7d7-46a5-917c-5dc0f72fce75&id=${id}&amount=${amount}&convert=${symbol}`
+          `/tools/price-conversion?CMC_PRO_API_KEY=${apiKey}&id=${id}&amount=${amount}&convert=${symbol}`
         )
         .then(({ data: { data } }) => {
           return {
