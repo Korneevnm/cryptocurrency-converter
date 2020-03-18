@@ -11,8 +11,7 @@ function* getCryptocurrencyList() {
     const data = yield call(() =>
       axiosConfig
         .get(
-          // `https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest?CMC_PRO_API_KEY=711e907c-a7d7-46a5-917c-5dc0f72fce75&limit=2500`
-          `/cryptocurrency/listings/latest?CMC_PRO_API_KEY=${apiKey}&limit=100`
+          `/cryptocurrency/listings/latest?CMC_PRO_API_KEY=${apiKey}&limit=2500`
         )
         .then(({ data: { data } }) => data)
     );

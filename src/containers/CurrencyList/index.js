@@ -171,18 +171,24 @@ const CurrencyList = () => {
         a.quote.USD.percent_change_24h - b.quote.USD.percent_change_24h
       }
       render={(text, record) => {
-        if (record.quote.USD.percent_change_24h > 0) {
+        if (record.quote.USD.percent_change_24h < 0) {
+          return (
+            <span className='minus'>
+              {parseFloat(record.quote.USD.percent_change_24h).toFixed(3)}%
+            </span>
+          );
+        } else if (record.quote.USD.percent_change_24h > 0) {
           return (
             <span className='plus'>
               {record.quote.USD.percent_change_24h.toFixed(3)}%
             </span>
           );
+        } else if (record.quote.USD.percent_change_24h === null) {
+          return `0.000%`;
         } else {
-          return (
-            <span className='minus'>
-              {record.quote.USD.percent_change_24h.toFixed(3)}%
-            </span>
-          );
+          return `${parseFloat(record.quote.USD.percent_change_24h).toFixed(
+            3
+          )}%`;
         }
       }}
     />

@@ -9,15 +9,15 @@ import {
 } from './constants';
 
 import axios from 'axios';
-import axiosConfig, { apiKey } from '../../utils/axiosConfig';
+import axiosConfig, { apiKey2, apiKey3 } from '../../utils/axiosConfig';
 
 function* getCurrencies() {
   try {
     const data = yield call(() =>
       axios
         .all([
-          axiosConfig.get(`/fiat/map?CMC_PRO_API_KEY=${apiKey}`),
-          axiosConfig.get(`/cryptocurrency/map?CMC_PRO_API_KEY=${apiKey}`)
+          axiosConfig.get(`/fiat/map?CMC_PRO_API_KEY=${apiKey2}`),
+          axiosConfig.get(`/cryptocurrency/map?CMC_PRO_API_KEY=${apiKey2}`)
         ])
         .then(data => data.map(({ data: { data } }) => data))
     );
@@ -27,23 +27,26 @@ function* getCurrencies() {
   }
 }
 
-function* getCurrencyConvert({ id, symbol, amount }) {
+function* getCurrencyConvert({ fromData, toData }) {
   try {
+    console.log(fromData);
     const data = yield call(() =>
       axiosConfig
         .get(
-          // `https://pro-api.coinmarketcap.com/v1/tools/price-conversion?CMC_PRO_API_KEY=711e907c-a7d7-46a5-917c-5dc0f72fce75&id=${id}&amount=${amount}&convert=${symbol}`
-          `/tools/price-conversion?CMC_PRO_API_KEY=${apiKey}&id=${id}&amount=${amount}&convert=${symbol}`
+          `/tools/price-conversion?CMC_PRO_API_KEY=${apiKey3}&id=${fromData.id}&amount=${fromData.amount}&convert=${toData.symbol}`
         )
         .then(({ data: { data } }) => {
           return {
             fromData: {
-              id: id,
-              amount: amount
+              symbol: fromData.symbol,
+              id: fromData.id,
+              amount: fromData.amount
             },
             toData: {
-              symbol: symbol,
-              price: data.quote[symbol].price
+              symbol: toData.symbol,
+              id: toData.id,
+              amount: fromData.amount,
+              price: data.quote[toData.symbol].price
             }
           };
         })

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { InputNumber } from 'antd';
-import { currenciesLoad, currencyLoad } from './actions';
+import { Input, InputNumber, Button } from 'antd';
+import { SwapOutlined } from '@ant-design/icons';
+import { currenciesLoad, currencyLoad, currencySwap } from './actions';
 import {
   makeSelectCurrencyFromData,
   makeSelectCurrencyToData
@@ -15,19 +16,45 @@ const CurrencyConverter = () => {
 
   const currencyFromData = useSelector(makeSelectCurrencyFromData);
   const currencyToData = useSelector(makeSelectCurrencyToData);
-  // console.log('currencyFromData', currencyFromData);
-  // console.log('currencyToData', currencyToData);
-  const { id } = currencyFromData;
-  const { symbol } = currencyToData;
+  const fromData = {
+    symbol: currencyFromData.symbol,
+    id: currencyFromData.id,
+    amount: value
+  };
+  const toData = {
+    symbol: currencyToData.symbol,
+    id: currencyToData.id,
+    amount: value
+  };
 
   useEffect(() => {
     dispatch(currenciesLoad());
-    dispatch(currencyLoad(id, symbol, value));
-  }, [dispatch, id, symbol, value]);
+  }, [dispatch]);
+
+  useEffect(() => {
+    dispatch(currencyLoad(fromData, toData));
+    console.log(fromData, toData);
+  }, [dispatch]);
 
   const handleChange = (currencyFromId, currencyToSymbol, value) => {
     dispatch(currencyLoad(currencyFromId, currencyToSymbol, value));
   };
+
+  const handleClick = () => {
+    dispatch(currencySwap(currencyFromData, currencyToData));
+    dispatch(currencyLoad(currencyToData, currencyFromData));
+  };
+  console.log('from', currencyFromData);
+  console.log('to', currencyToData);
+
+  const price =
+    currencyToData.price > 0.01
+      ? parseFloat(currencyToData.price)
+          .toFixed(2)
+          .replace(/(?=\B(?:\d{3})+(?!\d))/g, ' ')
+      : parseFloat(currencyToData.price)
+          .toFixed(6)
+          .replace(/(?=\B(?:\d{3})+(?!\d))/g, ' ');
 
   return (
     <div className='converter'>
@@ -45,6 +72,14 @@ const CurrencyConverter = () => {
           onChange={value => setValue(value)}
         />
       </div>
+
+      <Button
+        type='primary'
+        icon={<SwapOutlined />}
+        size='large'
+        onClick={handleClick}
+      />
+
       <div className='converter__item'>
         <CurrencyConverterSelect
           defaultValue='United States Dollar'
@@ -52,16 +87,7 @@ const CurrencyConverter = () => {
           handleChange={handleChange}
           inputValue={value}
         />
-        <InputNumber
-          size='large'
-          min={0}
-          formatter={value =>
-            parseFloat(value)
-              .toFixed(2)
-              .replace(/(?=\B(?:\d{3})+(?!\d))/g, ' ')
-          }
-          value={currencyToData.price}
-        />
+        <Input size='large' value={price} disabled />
       </div>
     </div>
   );

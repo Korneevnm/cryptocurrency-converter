@@ -38,10 +38,30 @@ const CurrencyConverterSelect = ({
           }
         }}
         onChange={(value, { id, symbol }) => {
+          let fromData = {
+            symbol: currencyFromData.symbol,
+            id: currencyFromData.id,
+            amount: inputValue
+          };
+          let toData = {
+            symbol: currencyToData.symbol,
+            id: currencyToData.id,
+            amount: inputValue
+          };
           if (type === 'fromSelect') {
-            handleChange(id, currencyToData.symbol, inputValue);
+            fromData = {
+              symbol: currencyFromData.symbol,
+              id: id,
+              amount: inputValue
+            };
+            handleChange(fromData, toData);
           } else {
-            handleChange(currencyFromData.id, symbol, inputValue);
+            let toData = {
+              symbol: symbol,
+              id: currencyToData.id,
+              amount: inputValue
+            };
+            handleChange(fromData, toData);
           }
         }}
         size='large'>

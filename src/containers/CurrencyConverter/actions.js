@@ -4,7 +4,8 @@ import {
   FETCH_CURRENCIES_FAILURE,
   CURRENCY_CONVERT_START,
   CURRENCY_CONVERT_SUCCESS,
-  CURRENCY_CONVERT_FAILURE
+  CURRENCY_CONVERT_FAILURE,
+  CURRENCY_CONVERT_SWAP
 } from './constants';
 
 const currenciesLoad = () => ({
@@ -22,25 +23,26 @@ const currenciesError = error => ({
   error
 });
 
-const currencyLoad = (id, symbol, amount) => {
-  return {
-    type: CURRENCY_CONVERT_START,
-    id,
-    symbol,
-    amount
-  };
-};
+const currencyLoad = (fromData, toData) => ({
+  type: CURRENCY_CONVERT_START,
+  fromData: fromData,
+  toData: toData
+});
 
-const currencyLoaded = toData => {
-  return {
-    type: CURRENCY_CONVERT_SUCCESS,
-    toData
-  };
-};
+const currencyLoaded = toData => ({
+  type: CURRENCY_CONVERT_SUCCESS,
+  toData
+});
 
 const currencyError = error => ({
   type: CURRENCY_CONVERT_FAILURE,
   error
+});
+
+const currencySwap = (currencyFromData, currencyToData) => ({
+  type: CURRENCY_CONVERT_SWAP,
+  currencyFromData,
+  currencyToData
 });
 
 export {
@@ -49,5 +51,6 @@ export {
   currenciesError,
   currencyLoad,
   currencyLoaded,
-  currencyError
+  currencyError,
+  currencySwap
 };
