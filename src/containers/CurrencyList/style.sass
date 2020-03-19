@@ -1,4 +1,6 @@
 .currency_table
+  .ant-table-row
+    cursor: pointer
   .ant-table-cell
     font-size: 16px
     .plus
@@ -29,3 +31,22 @@
     margin-bottom: 10px
   button
     width: 48%
+
+@media screen and (max-width: 767px)
+  .currency_table
+    table
+      overflow-x: auto
+      display: block
+    .ant-table
+      thead
+        &>tr
+          &>th
+            font-size: 14px
+            padding: 8px
+      tbody
+        &>tr
+          &>td
+            font-size: 14px
+            padding: 8px
+            &:not(:first-child)
+              min-width: 150px

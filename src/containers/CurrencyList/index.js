@@ -3,7 +3,12 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Table, Input, Button } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import { cryptocurrencyListLoad } from './actions';
+import { currencyLoad } from '../CurrencyConverter/actions';
 import { makeSelectCryptocurrencyList, makeSelectLoading } from './selectors';
+import {
+  makeSelectCurrencyFromData,
+  makeSelectCurrencyToData
+} from '../CurrencyConverter/selectors';
 import './style.sass';
 
 const CurrencyList = () => {
@@ -14,12 +19,15 @@ const CurrencyList = () => {
   const cryptocurrencyList = useSelector(makeSelectCryptocurrencyList);
   const cryptocurrencyListLoading = useSelector(makeSelectLoading);
 
+  const currencyFromData = useSelector(makeSelectCurrencyFromData);
+  const currencyToData = useSelector(makeSelectCurrencyToData);
+
   useEffect(() => {
     dispatch(cryptocurrencyListLoad());
 
     const interval = setInterval(() => {
       setCounter(counter => counter + 1);
-    }, 150000);
+    }, 15000);
     return () => {
       clearInterval(interval);
     };
@@ -198,7 +206,20 @@ const CurrencyList = () => {
     <>
       <Table
         dataSource={cryptocurrencyList}
-        rowKey={record => record.id}
+        rowKey={item => item.id}
+        onRow={item => {
+          return {
+            onClick: () => {
+              const fromData = {
+                label: item.name,
+                symbol: item.symbol,
+                id: item.id,
+                amount: currencyFromData.amount
+              };
+              dispatch(currencyLoad(fromData, currencyToData));
+            }
+          };
+        }}
         loading={cryptocurrencyListLoading}
         pagination={{
           total: cryptocurrencyList.length,

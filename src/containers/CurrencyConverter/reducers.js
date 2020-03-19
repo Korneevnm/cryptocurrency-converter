@@ -5,22 +5,26 @@ import {
   FETCH_CURRENCIES_FAILURE,
   CURRENCY_CONVERT_START,
   CURRENCY_CONVERT_SUCCESS,
-  CURRENCY_CONVERT_FAILURE,
-  CURRENCY_CONVERT_SWAP
+  CURRENCY_CONVERT_FAILURE
 } from './constants';
 
 const initialState = {
   currencies: [],
   cryptoCurrencies: [],
-  fromData: { symbol: 'BTC', id: 1, amount: 1 },
-  toData: { symbol: 'USD', id: 2781, amount: 1, price: 0 },
+  fromData: { label: 'Bitcoin', symbol: 'BTC', id: 1, amount: 1 },
+  toData: {
+    label: 'United States Dollar',
+    symbol: 'USD',
+    id: 2781,
+    amount: 1,
+    price: 0
+  },
   loading: true,
   error: false
 };
 
 const currency = (state = initialState, action) =>
   produce(state, draft => {
-    console.log(action);
     switch (action.type) {
       case FETCH_CURRENCIES_START:
         draft.currencies = state.currencies;
@@ -31,8 +35,8 @@ const currency = (state = initialState, action) =>
         break;
 
       case FETCH_CURRENCIES_SUCCESS:
-        draft.currencies = action.data[0];
-        draft.cryptoCurrencies = action.data[1];
+        draft.currencies = action.fiat;
+        draft.cryptoCurrencies = action.crypto;
         draft.loading = false;
         break;
 
@@ -61,12 +65,6 @@ const currency = (state = initialState, action) =>
         draft.toData = {};
         draft.loading = false;
         draft.error = action.error;
-        break;
-
-      case CURRENCY_CONVERT_SWAP:
-        draft.fromData = action.currencyToData;
-        draft.toData = action.currencyFromData;
-        draft.loading = false;
         break;
 
       default:

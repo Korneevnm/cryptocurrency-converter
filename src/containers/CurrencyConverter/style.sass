@@ -46,3 +46,18 @@
     align-items: center
   img
     margin-right: 5px
+
+
+@media screen and (max-width: 992px)
+  .converter__item
+    .ant-select
+      min-width: 60%
+
+@media screen and (max-width: 767px)
+  .converter
+    flex-flow: column
+    .ant-btn-icon-only.ant-btn-lg
+      transform: rotate(90deg)
+      margin: 10px auto
+  .converter__item
+    width: 100%

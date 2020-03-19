@@ -27,8 +27,8 @@ const CurrencyConverterSelect = ({
       <Select
         showSearch
         optionFilterProp='children'
-        defaultValue={defaultValue}
         loading={currenciesLoading}
+        value={defaultValue}
         filterOption={(input, option) => {
           if (option.children) {
             return option.children
@@ -39,17 +39,20 @@ const CurrencyConverterSelect = ({
         }}
         onChange={(value, { id, symbol }) => {
           let fromData = {
+            label: currencyFromData.label,
             symbol: currencyFromData.symbol,
             id: currencyFromData.id,
             amount: inputValue
           };
           let toData = {
+            label: currencyToData.label,
             symbol: currencyToData.symbol,
             id: currencyToData.id,
             amount: inputValue
           };
           if (type === 'fromSelect') {
             fromData = {
+              label: value,
               symbol: currencyFromData.symbol,
               id: id,
               amount: inputValue
@@ -57,6 +60,7 @@ const CurrencyConverterSelect = ({
             handleChange(fromData, toData);
           } else {
             let toData = {
+              label: value,
               symbol: symbol,
               id: currencyToData.id,
               amount: inputValue
@@ -71,6 +75,7 @@ const CurrencyConverterSelect = ({
               key={id}
               id={id}
               value={name}
+              title={name}
               symbol={symbol}
               className='converter_option'>
               {sign} {name} ({symbol})

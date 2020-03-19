@@ -8,12 +8,12 @@ import axiosConfig, { apiKey } from '../../utils/axiosConfig';
 
 function* getCryptocurrencyList() {
   try {
-    const data = yield call(() =>
-      axiosConfig
-        .get(
-          `/cryptocurrency/listings/latest?CMC_PRO_API_KEY=${apiKey}&limit=2500`
-        )
-        .then(({ data: { data } }) => data)
+    const {
+      data: { data }
+    } = yield call(() =>
+      axiosConfig.get(
+        `/cryptocurrency/listings/latest?CMC_PRO_API_KEY=${apiKey}&limit=2500`
+      )
     );
     yield put({ type: FETCH_CRYPTOCURRENCYLIST_SUCCESS, data });
   } catch (error) {

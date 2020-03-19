@@ -4,8 +4,7 @@ import {
   FETCH_CURRENCIES_FAILURE,
   CURRENCY_CONVERT_START,
   CURRENCY_CONVERT_SUCCESS,
-  CURRENCY_CONVERT_FAILURE,
-  CURRENCY_CONVERT_SWAP
+  CURRENCY_CONVERT_FAILURE
 } from './constants';
 
 const currenciesLoad = () => ({
@@ -39,18 +38,11 @@ const currencyError = error => ({
   error
 });
 
-const currencySwap = (currencyFromData, currencyToData) => ({
-  type: CURRENCY_CONVERT_SWAP,
-  currencyFromData,
-  currencyToData
-});
-
 export {
   currenciesLoad,
   currenciesLoaded,
   currenciesError,
   currencyLoad,
   currencyLoaded,
-  currencyError,
-  currencySwap
+  currencyError
 };

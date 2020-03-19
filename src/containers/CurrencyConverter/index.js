@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Input, InputNumber, Button } from 'antd';
 import { SwapOutlined } from '@ant-design/icons';
-import { currenciesLoad, currencyLoad, currencySwap } from './actions';
+import { currenciesLoad, currencyLoad } from './actions';
 import {
   makeSelectCurrencyFromData,
   makeSelectCurrencyToData
@@ -17,11 +17,13 @@ const CurrencyConverter = () => {
   const currencyFromData = useSelector(makeSelectCurrencyFromData);
   const currencyToData = useSelector(makeSelectCurrencyToData);
   const fromData = {
+    label: currencyFromData.label,
     symbol: currencyFromData.symbol,
     id: currencyFromData.id,
     amount: value
   };
   const toData = {
+    label: currencyToData.label,
     symbol: currencyToData.symbol,
     id: currencyToData.id,
     amount: value
@@ -32,23 +34,21 @@ const CurrencyConverter = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    dispatch(currencyLoad(fromData, toData));
-    console.log(fromData, toData);
-  }, [dispatch]);
+    if (value > 0) {
+      dispatch(currencyLoad(fromData, toData));
+    }
+  }, [dispatch, value]);
 
-  const handleChange = (currencyFromId, currencyToSymbol, value) => {
-    dispatch(currencyLoad(currencyFromId, currencyToSymbol, value));
+  const handleChange = (fromData, toData) => {
+    dispatch(currencyLoad(fromData, toData));
   };
 
   const handleClick = () => {
-    dispatch(currencySwap(currencyFromData, currencyToData));
     dispatch(currencyLoad(currencyToData, currencyFromData));
   };
-  console.log('from', currencyFromData);
-  console.log('to', currencyToData);
 
   const price =
-    currencyToData.price > 0.01
+    currencyToData.price && currencyToData.price > 0.01
       ? parseFloat(currencyToData.price)
           .toFixed(2)
           .replace(/(?=\B(?:\d{3})+(?!\d))/g, ' ')
@@ -60,7 +60,7 @@ const CurrencyConverter = () => {
     <div className='converter'>
       <div className='converter__item'>
         <CurrencyConverterSelect
-          defaultValue='Bitcoin'
+          defaultValue={fromData.label}
           type='fromSelect'
           handleChange={handleChange}
           inputValue={value}
@@ -82,12 +82,12 @@ const CurrencyConverter = () => {
 
       <div className='converter__item'>
         <CurrencyConverterSelect
-          defaultValue='United States Dollar'
+          defaultValue={toData.label}
           type='toSelect'
           handleChange={handleChange}
           inputValue={value}
         />
-        <Input size='large' value={price} disabled />
+        <Input size='large' value={value > 0 ? price : 0} disabled />
       </div>
     </div>
   );

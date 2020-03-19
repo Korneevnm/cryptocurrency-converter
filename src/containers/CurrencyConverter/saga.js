@@ -13,15 +13,20 @@ import axiosConfig, { apiKey2, apiKey3 } from '../../utils/axiosConfig';
 
 function* getCurrencies() {
   try {
-    const data = yield call(() =>
-      axios
-        .all([
-          axiosConfig.get(`/fiat/map?CMC_PRO_API_KEY=${apiKey2}`),
-          axiosConfig.get(`/cryptocurrency/map?CMC_PRO_API_KEY=${apiKey2}`)
-        ])
-        .then(data => data.map(({ data: { data } }) => data))
+    const [
+      {
+        data: { data: fiat }
+      },
+      {
+        data: { data: crypto }
+      }
+    ] = yield call(() =>
+      axios.all([
+        axiosConfig.get(`/fiat/map?CMC_PRO_API_KEY=${apiKey2}`),
+        axiosConfig.get(`/cryptocurrency/map?CMC_PRO_API_KEY=${apiKey2}`)
+      ])
     );
-    yield put({ type: FETCH_CURRENCIES_SUCCESS, data });
+    yield put({ type: FETCH_CURRENCIES_SUCCESS, fiat, crypto });
   } catch (error) {
     yield put({ type: FETCH_CURRENCIES_FAILURE, error });
   }
@@ -29,29 +34,29 @@ function* getCurrencies() {
 
 function* getCurrencyConvert({ fromData, toData }) {
   try {
-    console.log(fromData);
-    const data = yield call(() =>
-      axiosConfig
-        .get(
-          `/tools/price-conversion?CMC_PRO_API_KEY=${apiKey3}&id=${fromData.id}&amount=${fromData.amount}&convert=${toData.symbol}`
-        )
-        .then(({ data: { data } }) => {
-          return {
-            fromData: {
-              symbol: fromData.symbol,
-              id: fromData.id,
-              amount: fromData.amount
-            },
-            toData: {
-              symbol: toData.symbol,
-              id: toData.id,
-              amount: fromData.amount,
-              price: data.quote[toData.symbol].price
-            }
-          };
-        })
+    const {
+      data: { data }
+    } = yield call(() =>
+      axiosConfig.get(
+        `/tools/price-conversion?CMC_PRO_API_KEY=${apiKey3}&id=${fromData.id}&amount=${fromData.amount}&convert=${toData.symbol}`
+      )
     );
-    yield put({ type: CURRENCY_CONVERT_SUCCESS, data });
+    const currency = {
+      fromData: {
+        label: fromData.label,
+        symbol: fromData.symbol,
+        id: fromData.id,
+        amount: fromData.amount
+      },
+      toData: {
+        label: toData.label,
+        symbol: toData.symbol,
+        id: toData.id,
+        amount: fromData.amount,
+        price: data.quote[toData.symbol].price
+      }
+    };
+    yield put({ type: CURRENCY_CONVERT_SUCCESS, data: currency });
   } catch (error) {
     yield put({ type: CURRENCY_CONVERT_FAILURE, error });
   }
